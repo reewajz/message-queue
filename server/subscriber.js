@@ -1,16 +1,16 @@
 const amqp = require('amqplib');
 const express = require('express');
 const http = require('http');
-const socketIO = require('socket.io');
+const { Server } = require('socket.io');
 
 async function subscribeAndSendToClient() {
-  const connection = await amqp.connect('amqp://localhost');
+  const connection = await amqp.connect('amqp://localhost:5672');
   const channel = await connection.createChannel();
   const queue = 'taskQueue';
 
   const app = express();
   const server = http.createServer(app);
-  const io = socketIO(server);
+  const io = new Server(server);
 
   app.use(express.static('public'));
 
@@ -22,17 +22,24 @@ async function subscribeAndSendToClient() {
     });
   });
 
-  await channel.assertQueue(queue);
+  await channel.assertQueue(queue, { durable: true });
 
-  channel.prefetch(1); // Process one message at a time
+  await channel.prefetch(1); // Process one message at a time
 
-  channel.consume(queue, (message) => {
+  await channel.consume(queue, async (message) => {
     const data = JSON.parse(message.content.toString());
-    if (data.value >= 7) {
-      console.log(`Filtered (priority): ${JSON.stringify(data)}`);
-      io.emit('filteredData', data);
+
+    try {
+      if (data.value >= 7) {
+        console.log(`Filtered (priority): ${JSON.stringify(data)}`);
+      }
+      console.log(`Received message: ${message.content.toString()}`);
+
+      channel.ack(message);
+    } catch (error) {
+      console.error('Error processing message:', error);
+      channel.reject(message, false);
     }
-    channel.ack(message);
   });
 
   server.listen(3000, () => {

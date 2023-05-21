@@ -2,17 +2,22 @@ const amqp = require('amqplib');
 const { getRandomNumber } = require('./utils');
 
 async function messagePublisher() {
-  const connection = await amqp.connect('amqp://localhost');
+  const connection = await amqp.connect('amqp://localhost:5672');
   const channel = await connection.createChannel();
   const queue = 'taskQueue';
 
-  setInterval(() => {
+  const startTime = new Date().getTime();
+
+  let interval = setInterval(() => {
+    // to clear interval after 10 seconds
+    if (new Date().getTime() - startTime > 10000) {
+      clearInterval(interval);
+      return;
+    }
     const data = {
       timestamp: Date.now(),
       value: getRandomNumber()
     };
-    console.log(getRandomNumber(10))
-    console.log(getRandomNumber(10))
 
     const message = JSON.stringify(data);
     channel.sendToQueue(queue, Buffer.from(message), {
