@@ -16,6 +16,7 @@ async function messagePublisher() {
     }
     const data = {
       timestamp: Date.now(),
+      // todo: need to get random phrase
       value: getRandomNumber()
     };
 

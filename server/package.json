@@ -19,6 +19,7 @@
   "homepage": "https://github.com/reewajz/message-queue#readme",
   "dependencies": {
     "amqplib": "^0.10.3",
+    "cors": "^2.8.5",
     "socket.io": "^4.6.1"
   }
 }

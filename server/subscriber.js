@@ -1,7 +1,9 @@
 const amqp = require('amqplib');
 const express = require('express');
 const http = require('http');
-const { Server } = require('socket.io');
+// const { Server } = require('socket.io');
+const cors = require('cors');
+
 
 async function subscribeAndSendToClient() {
   const connection = await amqp.connect('amqp://localhost:5672');
@@ -10,8 +12,15 @@ async function subscribeAndSendToClient() {
 
   const app = express();
   const server = http.createServer(app);
-  const io = new Server(server);
+  const io = require('socket.io')(server, {
+    cors: {
+      origin: '*',
+      methods: ["GET", "POST"],
+    }
+  });
 
+
+  app.use(cors()); // Enable CORS middleware
   app.use(express.static('public'));
 
   io.on('connection', (socket) => {
@@ -30,11 +39,11 @@ async function subscribeAndSendToClient() {
     const data = JSON.parse(message.content.toString());
 
     try {
-      if (data.value >= 7) {
+      const priority = message?.properties?.priority;
+      if (priority && priority >= 7) {
         console.log(`Filtered (priority): ${JSON.stringify(data)}`);
+        io.emit('filteredData', data);
       }
-      console.log(`Received message: ${message.content.toString()}`);
-
       channel.ack(message);
     } catch (error) {
       console.error('Error processing message:', error);
