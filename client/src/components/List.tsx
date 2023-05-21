@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import socketIOClient from 'socket.io-client';
 import './List.css';
+import { timeConverter } from '../../TimeStampConverter';
 
 const endpoint = 'http://localhost:3000';
 
@@ -9,7 +10,7 @@ const List = () => {
 
   useEffect(() => {
     const socket = socketIOClient(endpoint);
-    socket.on('filteredData', (data) => {
+    socket.on('filteredData', (data: { [key: string]: any }) => {
       console.log(`Received: ${JSON.stringify(data)}`);
       setFilteredData((prevData) => [...prevData, data]);
     });
@@ -21,14 +22,14 @@ const List = () => {
       <table className="data-table">
         <thead>
           <tr>
-            <th>Timestamp</th>
+            <th>Date</th>
             <th>Value</th>
           </tr>
         </thead>
         <tbody>
           {filteredData.map((data, index) => (
             <tr key={index}>
-              <td>{data.timestamp}</td>
+              <td>{timeConverter(data.timestamp)}</td>
               <td>{data.value}</td>
             </tr>
           ))}
