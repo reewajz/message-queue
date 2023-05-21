@@ -1,0 +1,24 @@
+{
+  "name": "message-queue",
+  "version": "1.0.0",
+  "description": "This project simulates a high-volume data input environment using an open-source message queue with Node.js, using RabbitMQ as the message queue, and implements a publisher and subscriber using Node.js. Additionally, I have used Socket.IO to send filtered messages.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reewajz/message-queue.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/reewajz/message-queue/issues"
+  },
+  "homepage": "https://github.com/reewajz/message-queue#readme",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "socket.io": "^4.6.1"
+  }
+}
