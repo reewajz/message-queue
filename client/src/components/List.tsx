@@ -3,7 +3,7 @@ import socketIOClient from 'socket.io-client';
 import './List.css';
 import { timeConverter } from '../../TimeStampConverter';
 
-const endpoint = 'http://localhost:3000';
+const endpoint = 'http://localhost:4000';
 
 const List = () => {
   const [filteredData, setFilteredData] = useState<Array<{ [key: string]: any }>>([]);

@@ -4,8 +4,7 @@ const http = require('http');
 // const { Server } = require('socket.io');
 const cors = require('cors');
 
-
-async function subscribeAndSendToClient() {
+async function subscribeAndSend() {
   const connection = await amqp.connect('amqp://localhost:5672');
   const channel = await connection.createChannel();
   const queue = 'taskQueue';
@@ -15,10 +14,9 @@ async function subscribeAndSendToClient() {
   const io = require('socket.io')(server, {
     cors: {
       origin: '*',
-      methods: ["GET", "POST"],
+      methods: ['GET', 'POST']
     }
   });
-
 
   app.use(cors()); // Enable CORS middleware
   app.use(express.static('public'));
@@ -41,7 +39,7 @@ async function subscribeAndSendToClient() {
     try {
       const priority = message?.properties?.priority;
       if (priority && priority >= 7) {
-        console.log(`Filtered (priority): ${JSON.stringify(data)}`);
+        console.log(`Subscribed list ${JSON.stringify(data)}`);
         io.emit('filteredData', data);
       }
       channel.ack(message);
@@ -51,9 +49,9 @@ async function subscribeAndSendToClient() {
     }
   });
 
-  server.listen(3000, () => {
-    console.log('Server listening on port 3000');
+  server.listen(4000, () => {
+    console.log('Server listening on port 4000');
   });
 }
 
-subscribeAndSendToClient().catch(console.error);
+subscribeAndSend().catch(console.error);

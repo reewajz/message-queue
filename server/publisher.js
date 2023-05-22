@@ -9,7 +9,7 @@ async function messagePublisher() {
   const startTime = new Date().getTime();
 
   let interval = setInterval(() => {
-    // to clear interval after 10 seconds
+    // to clear interval after 30 seconds
     if (new Date().getTime() - startTime > 10000) {
       clearInterval(interval);
       return;
