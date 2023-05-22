@@ -1,7 +1,7 @@
 const amqp = require('amqplib');
 const { getRandomNumber } = require('./utils');
 
-async function messagePublisher() {
+async function publisher() {
   const connection = await amqp.connect('amqp://localhost:5672');
   const channel = await connection.createChannel();
   const queue = 'taskQueue';
@@ -28,4 +28,4 @@ async function messagePublisher() {
   }, 50); // Publish 20 messages per second
 }
 
-messagePublisher().catch(console.error);
+publisher().catch(console.error);

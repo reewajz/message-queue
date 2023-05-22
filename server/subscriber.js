@@ -2,7 +2,6 @@ const amqp = require('amqplib');
 const express = require('express');
 const http = require('http');
 // const { Server } = require('socket.io');
-const cors = require('cors');
 
 async function subscribeAndSend() {
   const connection = await amqp.connect('amqp://localhost:5672');
@@ -18,7 +17,6 @@ async function subscribeAndSend() {
     }
   });
 
-  app.use(cors()); // Enable CORS middleware
   app.use(express.static('public'));
 
   io.on('connection', (socket) => {
